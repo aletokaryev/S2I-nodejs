@@ -23,7 +23,7 @@ To install and run the project locally, follow the steps below:
 
    - Create a MongoDB account on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
    - Create a new cluster and obtain the database connection string.
-   - Paste the connection string into the `app.js` file in the database configuration section.
+   - Paste the connection string into the `server.js` file in the database configuration section.
 
 6. Start the server:
 
