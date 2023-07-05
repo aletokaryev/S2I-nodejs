@@ -8,7 +8,7 @@ To install and run the project locally, follow the steps below:
 2. Clone this repository to your computer:
 
    ```
-   git clone https://github.com/yourusername/repository-name.git]
+   git clone https://github.com/aletokaryev/S2I-nodejs
    ```
 
 3. Navigate to the project directory
