@@ -1,19 +1,35 @@
-// Importa il modulo del modello di università
-const University = require("../models/universityModel")
+// Importa il modulo del modello di università e corsi
+const University = require("../models/universityModel");
+const Course = require("../models/courseModel");
 
 // Recupera tutte le università presenti nel database
 getUniversities = async (req, res) => {
-    let university
     try {
-        university = await University.find() // Recupera tutte le università utilizzando il metodo find()
+      const universities = await University.find().populate("courses");
+      res.status(200).json({ universities });
     } catch (error) {
-        console.log("Error while loading universities", error)
+      console.log("Error while loading universities", error);
+      res.status(500).json({ error: "Error while loading universities" });
     }
-    if(!university){
-        return res.status(404).json({message: "No university found"}) // Restituisce un messaggio JSON se non ci sono università trovate
+  }  
+
+// Recupera i dettagli di una singola università
+getSingleUniversity = async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const uni = await University.findById(id);
+      
+      if (!uni) {
+        return res.status(404).json({ message: 'Uni not found' });
+      }
+  
+      res.json({ uni });
+    } catch (error) {
+      console.log('Error while retrieving uni', error);
+      res.status(500).json({ error: 'Error while retrieving uni' });
     }
-    return res.status(200).json({university}) // Restituisce un oggetto JSON contenente le università
-}
+  };
 
 // Aggiunge una nuova università al database
 addUniversity = async (req, res) => {
@@ -50,4 +66,4 @@ deleteUniversity= async (req, res) =>{
 }
 
 // Esporta le funzioni per consentirne l'utilizzo da altre parti del codice
-module.exports = {getUniversities, addUniversity, updateUniversity, deleteUniversity}
+module.exports = {getUniversities, getSingleUniversity, addUniversity, updateUniversity, deleteUniversity}

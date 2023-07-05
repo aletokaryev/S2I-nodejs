@@ -7,8 +7,7 @@ const courseSchema = new Schema({
     required: true
   },
   courseType: {
-    type: Schema.Types.ObjectId,
-    ref: 'Typology',
+    type: String,
     required: true
   },
   universities: [{

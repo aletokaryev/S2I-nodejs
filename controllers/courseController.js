@@ -1,6 +1,6 @@
 // Importa il modulo del modello del corso
 const Course = require("../models/courseModel")
-
+const University = require("../models/universityModel")
 // Recupera tutti i corsi presenti nel database
 getCourses = async (req, res) => {
     let courses
@@ -15,14 +15,41 @@ getCourses = async (req, res) => {
     return res.status(200).json({courses}) // Restituisce un oggetto JSON contenente i corsi
 }
 
+// Recupera i dettagli di un singolo corso
+getSingleCourse = async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const course = await Course.findById(id);
+      
+      if (!course) {
+        return res.status(404).json({ message: 'Course not found' });
+      }
+  
+      res.json({ course });
+    } catch (error) {
+      console.log('Error while retrieving course', error);
+      res.status(500).json({ error: 'Error while retrieving course' });
+    }
+  };
+
 // Aggiunge un nuovo corso al database
 addCourse = async (req, res) => {
     const { name, courseType, universities } = req.body
     const newCourse = new Course({ name, courseType, universities }) // Crea una nuova istanza del modello di corso con i dati forniti
 
-    await newCourse.save() // Salva il nuovo corso nel database
-    .then(course => res.json(course)) // Restituisce un oggetto JSON rappresentante il corso aggiunto
-    .catch(err => res.status(500).json({error: "Error while uploading course to DB", err})) // Restituisce un messaggio JSON di errore se si verifica un errore durante il salvataggio
+    try {
+        const savedCourse = await newCourse.save();
+        await University.updateMany(
+            { _id: { $in: universities } },
+            { $push: { courses: savedCourse._id } }
+        );
+
+        res.json(savedCourse);
+    } catch (error) {
+        console.log('Error while uploading course to DB', error);
+        res.status(500).json({ error: 'Error while uploading course to DB' });
+    }
 }
 
 // Aggiorna un corso esistente nel database
@@ -50,4 +77,4 @@ deleteCourse = async (req, res) =>{
 }
 
 // Esporta le funzioni per consentirne l'utilizzo da altre parti del codice
-module.exports = {getCourses, addCourse, updateCourse, deleteCourse}
+module.exports = {getCourses, getSingleCourse, addCourse, updateCourse, deleteCourse}
