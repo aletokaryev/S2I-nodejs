@@ -45,7 +45,7 @@ Below are the available API endpoints in the project:
 - **PUT /api/v1/courses/:id**: Update an existing course in the database.
 - **DELETE /api/v1/courses/:id**: Delete a course from the database.
 
-####Filters
+##### Filters
 
 - **To filter by name: GET /courses?name=Course Name**
 - **To filter by course type: GET /courses?courseType=course type**
