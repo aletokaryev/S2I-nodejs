@@ -3,17 +3,26 @@ const Course = require("../models/courseModel")
 const University = require("../models/universityModel")
 // Recupera tutti i corsi presenti nel database
 getCourses = async (req, res) => {
-    let courses
+    const { name, courseType } = req.query;
+    let courses;
+  
     try {
-        courses = await Course.find() // Recupera tutti i corsi utilizzando il metodo find()
+      if (name && courseType) {
+        courses = await Course.find({ name, courseType });
+      } else if (name) {
+        courses = await Course.find({ name });
+      } else if (courseType) {
+        courses = await Course.find({ courseType });
+      } else {
+        courses = await Course.find();
+      }
+  
+      res.json({ courses });
     } catch (error) {
-        console.log("Error while loading courses", error)
+      console.log("Error while loading courses", error);
+      res.status(500).json({ error: "Error while loading courses" });
     }
-    if(!courses){
-        return res.status(404).json({message: "No courses found"}) // Restituisce un messaggio JSON se non ci sono corsi trovati
-    }
-    return res.status(200).json({courses}) // Restituisce un oggetto JSON contenente i corsi
-}
+  };
 
 // Recupera i dettagli di un singolo corso
 getSingleCourse = async (req, res) => {
